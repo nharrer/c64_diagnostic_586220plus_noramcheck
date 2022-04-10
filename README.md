@@ -6,5 +6,4 @@ It is not intended to diagnose defective C64s, but to check a test harness on a 
 
 ![](img/screenshot.jpg)
 
-The source code can be compiled in [https://www.georg-rottensteiner.de/](C64Studio).
-
+The source code can be compiled in [C64Studio](https://www.georg-rottensteiner.de/).
