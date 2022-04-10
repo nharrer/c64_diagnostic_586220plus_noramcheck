@@ -5,8 +5,12 @@
 ;
 ; Additional kernal checksums by Marty / RADWAR
 ; SX-64 Tape Port check removal by KiWi / www.SX-64.de
+;
+; Special NORAMCHECK version for testing hardware test 
+; harnesses by RasterInterrupt - https://rasterirq.com/
 
-!to "cart.crt",cart8crt
+
+!to "c64_diagnostic_586220plus_noramcheck.crt",cart8crt
 
 *=$8000
 ;
