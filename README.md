@@ -10,4 +10,4 @@ The project can be loaded and compiled in [C64Studio](https://www.georg-rottenst
 
 ## Screenshot
 
-[](img/screenshot.jpg)
+![Screenhot](img/screenshot.jpg)
