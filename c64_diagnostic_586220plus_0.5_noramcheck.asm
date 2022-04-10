@@ -1,4 +1,4 @@
-; 586220 (c64) and 588220 (sx64) diagnostic plus.
+﻿; 586220 (c64) and 588220 (sx64) diagnostic plus.
 ; Kernal detection and reassembly by worldofjani.com
 ;
 ; Assembly for C64 Studio - http://www.georg-rottensteiner.de/de/c64.html
@@ -504,9 +504,9 @@ I80CA  LDA F989E,X
        LDA AE47E
        CMP #$2A
        BEQ I80E8               ;SX
-       LDX #$1A
-I80DC  LDA F98DE,X             ;"C64 DIAGNOSTIC REV 586220"
-       STA F0406,X
+       LDX #37
+I80DC  LDA F98DE,X             ;"C64 DIAGNOSTIC REV 586220 NORAMCHECK"
+       STA F0400+1,X
        DEX
        BPL I80DC
        JMP I80F3
@@ -646,33 +646,22 @@ I81E9  LDA F9918,X            ;"ram test 1", 0800-8000
        STA F04C8,X
        DEX
        BPL I81E9
-       LDA #<$0800
-       STA A04
-       LDA #>$0800
-       STA A05
-       LDA #<$8000
-       STA A06
-       LDA #>$8000
-       STA A07
-       JSR I830D              ;do ram test 1
-       JSR I97B8              ;output timer values
+       LDX #$06
+--     LDA txtskp,X           ;"skipping"
+       STA F04C8+13,X
+       DEX
+       BPL --
 
        LDX #$08
 I820A  LDA F9921,X            ;"ram test 2", 3000-0000
        STA F04F0,X
        DEX
        BPL I820A
-       LDA #<$3000
-       STA A04
-       LDA #>$3000
-       STA A05
-       LDA #<$0000
-       STA A06
-       LDA #>$0000
-       STA A07
-       JMP I8528              ;do RAM TEST2. copy memtestroutine from $8000 to $1000- and exec it
-
-
+       LDX #$06
+--     LDA txtskp,X           ;"skipping"
+       STA F04F0+13,X
+       DEX
+       BPL --
                               ;continue tests here from jmp/routine above
 I8226  JSR I97B8              ;output timer values
        JMP I8765              ;do PLA TEST. copy routine from $8000- to $1000- and exec it
@@ -727,37 +716,15 @@ I8284  STA F0600,X
 
 
 I828D  LDX #$09               ;screen ram test
-I828F  LDA F99A7,X            ;"screen ram" (0400)
+--     LDA F99A7,X            ;"screen ram" (0400)
        STA F04A0,X
        DEX
-       BPL I828F
-       LDX #<$0400
-       LDY #>$0400
-       STX A02
-       STY A03
-       LDY #$00
-I82A2  LDX #$03
-       LDA (P02),Y
-       PHA
-I82A7  LDA F98D6,X            ;mem test pattern
-       STA (P02),Y
-       JSR I8300              ;fix
-       LDA (P02),Y
-       CMP F98D6,X            ;mem test pattern
-       BNE I82D0              ;memtest fail
+       BPL --
+       LDX #$06
+--     LDA txtskp,X           ;"skipping"
+       STA F04A0+13,X
        DEX
-       BPL I82A7
-       PLA
-       STA (P02),Y
-       JSR I82F5              ;fix
-       LDA A03
-       CMP #>$0800
-       BNE I82A2
-                              ;screen ram
-       LDA #$0F               ;"O"
-       STA A04AD
-       LDA #$0B               ;"K"
-       STA A04AE
+       BPL --
        RTS
        
 I82D0  PHA
@@ -1064,6 +1031,7 @@ I853A  LDA (P02),Y
        BNE I853A
        JMP E154E              ;fix
 
+*=$854E
        LDA #$30
        STA A01
        LDA #$FF
@@ -1445,74 +1413,11 @@ I888A  LDA F992A,X            ;COLOR RAM
        STA F0540,X
        DEX
        BPL I888A
-       LDA #$37
-       STA A01
-       LDX #<$D800            ;COLOR RAM addr
-       LDY #>$D800
-       STX A02
-       STY A03
-       LDY #$00
-I88A1  LDX #$03
-       LDA (P02),Y
-       PHA
-I88A6  LDA F98DA,X            ;mem test pattern
-       STA (P02),Y
-       JSR I8901              ;fix
-       LDA (P02),Y
-       AND #$0F
-       CMP F98DA,X            ;mem test pattern
-       BNE I88D1
+       LDX #$06
+--     LDA txtskp,X           ;"skipping"
+       STA F0540+13,X
        DEX
-       BPL I88A6
-       PLA
-       STA (P02),Y
-       JSR I88F6              ;fix
-       LDA A03
-       CMP #>$DC00
-       BNE I88A1
-                              ;color ram test OK
-       LDA #$0F               ;"O"
-       STA A054D
-       LDA #$0B               ;"K"
-       STA A054E
-       RTS
-
-I88D1  PHA                    ;color ram test BAD
-       LDA F98DA,X            ;mem test pattern
-       STA A08
-       PLA
-       JSR I83C5              ;output "BAD" at corresponding ramchip
-
-       LDA #$02               ;"BAD" color ram
-       STA A054D
-       LDA #$01
-       STA A054E
-       LDA #$04
-       STA A054F
-       LDA #$02
-       STA AD94D
-       STA AD94E
-       STA AD94F
-       RTS
-
-I88F6  INC A02
-       LDA A02
-       CMP #$00
-       BNE I8900
-       INC A03
-I8900  RTS
-
-I8901  TXA
-       PHA
-       LDX #$00
-I8905  INX
-       BNE I8905
-I8908  INX
-       BNE I8908
-       PLA
-       TAX
-       RTS
-
+       BPL --
                               ;KERNAL/BASIC/CHARAC ROM test
 I890E  LDX #$09
 I8910  LDA F993C,X            ;"KERNAL ROM"
@@ -3471,7 +3376,7 @@ F98D6  !byte $00,$55,$AA,$FF           ;mem test pattern
 F98DA  !byte $00,$05,$0A,$0F           ;mem test pattern
 
 !CONVTAB scr
-F98DE  !text "c-64 diagnostic rev586220++"
+F98DE  !text "c-64 diagnostic rev586220++ noramcheck"
 
 F98F8  !text "count"
 
@@ -3520,6 +3425,7 @@ F99A7  !text "screen ram"
 F99B1  !text "4066",0
        !text "u28 bad"
 
+txtskp !text "skipped"
 
 
 F99BD  !byte $55,$40,$40,$40;"U...
